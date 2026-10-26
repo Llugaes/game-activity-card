@@ -26,7 +26,7 @@ export function renderMarkdown(data, options = {}) {
       + (snapshot.games || []).map(game => `| ${md(game.title)} | ${hours(byId.get(game.id)?.minutes ?? (platform === 'steam' ? game.recentMinutes : null))} | ${hours(game.totalMinutes)} | ${game.lastPlayedAt || '—'} |`).join('\n') + '\n\n'
     if (platform === 'switch' && snapshot.days?.length) output += '### 平台逐日记录\n\n| 原日期 | 已记录小时 |\n| :--- | ---: |\n' + snapshot.days.slice(-30).reverse().map(day => `| ${day.date} | ${hours(day.minutes)} |`).join('\n') + '\n\n'
   }
-  return output
+  return output.trimEnd() + '\n'
 }
 export async function renderWebp(svg) {
   const { default: sharp } = await import('sharp')
