@@ -1,0 +1,59 @@
+name: Game Activity Card
+description: Steam, PlayStation and Nintendo Switch recent-play cards for your GitHub profile
+author: Llugaes
+branding:
+  icon: activity
+  color: green
+inputs:
+  mode:
+    description: sync, collect, or render (render works offline without credentials)
+    default: sync
+  root:
+    description: Consumer directory within github.workspace
+    default: .
+  config-path:
+    description: Configuration file relative to root
+    default: activity.config.json
+  data-path:
+    description: Public history JSON relative to root
+    default: data/activity.json
+  output-dir:
+    description: Images directory relative to root
+    default: assets
+  state-path:
+    description: Encrypted PSN session relative to root
+    default: state/psn-session.enc.json
+  platforms:
+    description: Comma separated platforms to collect
+    default: steam,psn,switch
+outputs:
+  data-path:
+    description: Public history path
+    value: ${{ steps.run.outputs.data-path }}
+  output-dir:
+    description: Image output directory
+    value: ${{ steps.run.outputs.output-dir }}
+  failures:
+    description: Number of configured platforms that failed
+    value: ${{ steps.run.outputs.failures }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: '24'
+    - name: Install component dependencies
+      shell: bash
+      run: npm ci --ignore-scripts --prefix "$GITHUB_ACTION_PATH"
+    - name: Generate game activity
+      id: run
+      shell: bash
+      env:
+        PLAYER_LOG_ROOT: ${{ github.workspace }}/${{ inputs.root }}
+        PLAYER_LOG_CONFIG_PATH: ${{ inputs.config-path }}
+        PLAYER_LOG_DATA_PATH: ${{ inputs.data-path }}
+        PLAYER_LOG_OUTPUT_DIR: ${{ inputs.output-dir }}
+        PLAYER_LOG_STATE_PATH: ${{ inputs.state-path }}
+        PLAYER_LOG_MODE: ${{ inputs.mode }}
+        SYNC_PLATFORMS: ${{ inputs.platforms }}
+      run: node "$GITHUB_ACTION_PATH/bin/player-log.mjs" "$PLAYER_LOG_MODE"

@@ -1,0 +1,14 @@
+{
+  "name": "game-activity-card",
+  "version": "1.0.0",
+  "description": "Steam, PlayStation and Nintendo Switch activity cards for your profile",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "bin": { "game-activity-card": "bin/player-log.mjs" },
+  "exports": { ".": "./src/index.mjs" },
+  "files": ["src", "bin", "assets/icons", "action.yml", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "docs/SETUP.md"],
+  "scripts": { "test": "node --test", "check": "node --check bin/player-log.mjs" },
+  "repository": { "type": "git", "url": "git+https://github.com/Llugaes/game-activity-card.git" },
+  "dependencies": { "psn-api": "2.18.1", "sharp": "0.35.5" }
+}
